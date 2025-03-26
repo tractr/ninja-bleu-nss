@@ -3,7 +3,9 @@
     "login": "Connexion",
     "logout": "Déconnexion",
     "openSettings": "Ouvrir les paramètres",
-    "add": "Ajouter"
+    "add": "Ajouter",
+    "save": "Enregistrer",
+    "cancel": "Annuler"
   },
   "home": {
     "welcome": "Bienvenue, {email}",
@@ -15,7 +17,8 @@
   "navigation": {
     "home": "Accueil",
     "mainMenu": "Menu principal",
-    "todos": "Tâches"
+    "todos": "Tâches",
+    "clients": "Clients"
   },
   "settings": {
     "title": "Paramètres",
@@ -62,5 +65,29 @@
     "newTodoPlaceholder": "Ajouter une nouvelle tâche...",
     "noTodos": "Aucune tâche pour le moment",
     "showAll": "Afficher tout"
+  },
+  "clients": {
+    "title": "Clients",
+    "addNew": "Ajouter un client",
+    "addClient": "Ajouter un client",
+    "editClient": "Modifier le client",
+    "noClients": "Aucun client trouvé",
+    "showAll": "Afficher les clients inactifs",
+    "inactive": "Inactif",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce client ?",
+    "name": "Nom",
+    "companyName": "Nom de l'entreprise",
+    "alias": "Alias",
+    "address": "Adresse",
+    "apartment": "Appartement/Suite",
+    "city": "Ville",
+    "province": "Province/État",
+    "postalCode": "Code postal",
+    "country": "Pays",
+    "paymentTerms": "Conditions de paiement",
+    "discountAmount": "Montant de la remise",
+    "electronicPaymentDiscountPercent": "Remise paiement électronique (%)",
+    "active": "Actif",
+    "reason": "Raison"
   }
 }

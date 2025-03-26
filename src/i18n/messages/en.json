@@ -3,7 +3,9 @@
     "login": "Login",
     "logout": "Logout",
     "openSettings": "Open settings",
-    "add": "Add"
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "auth": {
     "signInTitle": "Sign in to your account",
@@ -41,7 +43,8 @@
   "navigation": {
     "home": "Home",
     "mainMenu": "Main menu",
-    "todos": "Todos"
+    "todos": "Todos",
+    "clients": "Clients"
   },
   "settings": {
     "title": "Settings",
@@ -62,5 +65,29 @@
     "newTodoPlaceholder": "Add a new todo...",
     "noTodos": "No todos yet",
     "showAll": "Show all"
+  },
+  "clients": {
+    "title": "Clients",
+    "addNew": "Add New Client",
+    "addClient": "Add Client",
+    "editClient": "Edit Client",
+    "noClients": "No clients found",
+    "showAll": "Show inactive clients",
+    "inactive": "Inactive",
+    "confirmDelete": "Are you sure you want to delete this client?",
+    "name": "Name",
+    "companyName": "Company Name",
+    "alias": "Alias",
+    "address": "Address",
+    "apartment": "Apartment/Suite",
+    "city": "City",
+    "province": "Province/State",
+    "postalCode": "Postal Code",
+    "country": "Country",
+    "paymentTerms": "Payment Terms",
+    "discountAmount": "Discount Amount",
+    "electronicPaymentDiscountPercent": "Electronic Payment Discount (%)",
+    "active": "Active",
+    "reason": "Reason"
   }
 }

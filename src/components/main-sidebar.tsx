@@ -12,7 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { Home, User2, ChevronUp, ListCheck, Monitor, LogOut, LucideProps } from 'lucide-react';
+import { Home, User2, ChevronUp, ListCheck, Monitor, LogOut, LucideProps, Users } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,6 +39,11 @@ const items: Array<{
     titleKey: 'navigation.todos',
     url: '/todos',
     icon: ListCheck,
+  },
+  {
+    titleKey: 'navigation.clients',
+    url: '/clients',
+    icon: Users,
   },
 ];
 
