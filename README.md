@@ -43,7 +43,7 @@ A modern full-stack boilerplate featuring Next.js 15, Supabase, Shadcn/UI, and m
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/pierrecabriere/nss-boilerplate.git my-project
+git clone https://github.com/pierrecabriere/ninja-bleu-nss.git my-project
 cd my-project
 ```
 

@@ -19,7 +19,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'NSS Boilerplate',
+  title: 'ninja-bleu-nss',
   description: 'A simple boilerplate for Next.js, Supabase and Shadcn/UI',
 };
 
