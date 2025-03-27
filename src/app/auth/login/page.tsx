@@ -147,7 +147,10 @@ export default function LoginPage() {
     >
       <Card className="max-w-md w-full">
         <CardHeader className="flex justify-center items-center gap-4">
-          <Image src="/images/logo.svg" alt={t('common.logo')} width={150} height={100} />
+          <div className="flex items-center">
+            <Image src="/images/logo-180x180.webp" alt={t('common.logo')} width={50} height={50} />
+            <span className="ml-3 font-bold text-blue-600">Admin NinjaBleu</span>
+          </div>
           <CardTitle className="text-center text-lg font-extrabold">
             {t('auth.signInTitle')}
           </CardTitle>
