@@ -24,8 +24,8 @@ export default function DashboardLayout({
         <SiteHeader />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2 rounded-md">
-            <div className="flex flex-col gap-3 py-3 md:gap-4 md:py-4">
-              <div className="px-4 lg:px-6">
+            <div className="flex flex-col gap-3 py-3 pt-6 md:gap-4 md:py-4 md:pt-8">
+              <div className="px-6 lg:px-8">
                 {children}
               </div>
             </div>
