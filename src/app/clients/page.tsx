@@ -357,21 +357,25 @@ export default function ClientsPage() {
       {
         id: "select",
         header: ({ table }) => (
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Select all"
-          />
+          <div className="pl-4">
+            <Checkbox
+              checked={
+                table.getIsAllPageRowsSelected() ||
+                (table.getIsSomePageRowsSelected() && "indeterminate")
+              }
+              onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+              aria-label="Select all"
+            />
+          </div>
         ),
         cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
+          <div className="pl-4">
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+            />
+          </div>
         ),
         enableSorting: false,
         enableHiding: false,
@@ -508,26 +512,25 @@ export default function ClientsPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex-1">
-            <div className="relative">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold">{t('clients.title')}</h1>
+          <div className="flex items-center gap-2">
+            <div className="relative w-64">
               <Input
                 placeholder={t('clients.searchPlaceholder')}
                 value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                 onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-                className="w-full h-10 pl-10"
+                className="h-9 pl-9"
                 type="text"
               />
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                 <Search className="h-4 w-4 text-gray-500" />
               </div>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="h-10 gap-1">
+                <Button variant="outline" className="h-9 gap-1">
                   {t('clients.filter')}
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -544,7 +547,7 @@ export default function ClientsPage() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button onClick={() => handleAddNew()} className="h-10 gap-1">
+            <Button onClick={() => handleAddNew()} className="h-9 gap-1" variant="outline">
               <Plus className="h-4 w-4" />
               {t('clients.addClient')}
             </Button>
@@ -557,7 +560,7 @@ export default function ClientsPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="rounded-md border">
+            <div className="rounded-t-md border">
               <Table>
                 <TableHeader>
                   {table.getHeaderGroups().map((headerGroup) => (

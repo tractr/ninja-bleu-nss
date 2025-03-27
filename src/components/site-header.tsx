@@ -19,11 +19,11 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b bg-background px-4 lg:px-6">
+    <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-4 border-b bg-background px-4 lg:px-6 rounded-t-md">
       <div className="flex items-center gap-2 lg:gap-3">
         <SidebarTrigger />
         <Separator orientation="vertical" className="h-6" />
-        <h1 className="text-lg font-normal">{title}</h1>
+        <h1 className="text-base font-normal">{title}</h1>
       </div>
       <div className="ml-auto flex items-center gap-2">
         <ModeToggle />
