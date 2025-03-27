@@ -80,6 +80,7 @@
     "showActive": "Show active clients only",
     "showInactive": "Show inactive clients only",
     "filter": "Status",
+    "columns": "Columns",
     "list": "Client list",
     "status": "Status",
     "inactive": "Inactive",

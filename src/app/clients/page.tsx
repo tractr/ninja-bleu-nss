@@ -301,8 +301,11 @@ export default function ClientsPage() {
   // TanStack Table state
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({
+    alias: false,
+  });
   const [rowSelection, setRowSelection] = React.useState({});
+  const [globalFilter, setGlobalFilter] = React.useState('');
   
   const { data: clients, isLoading } = useClients({ 
     active: statusFilter === 'active' ? true : statusFilter === 'inactive' ? false : undefined 
@@ -381,20 +384,20 @@ export default function ClientsPage() {
         enableHiding: false,
       },
       {
-        accessorKey: "name",
+        accessorKey: "alias",
         header: ({ column }) => {
           return (
             <Button
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-              className="pl-4"
+              className="px-4 justify-start font-medium"
             >
-              {t('clients.name')}
+              {t('clients.alias')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
         },
-        cell: ({ row }) => <div className="pl-4 font-medium">{row.getValue("name") || "-"}</div>,
+        cell: ({ row }) => <div className="px-4">{row.getValue("alias") || "-"}</div>,
       },
       {
         accessorKey: "company_name",
@@ -403,13 +406,46 @@ export default function ClientsPage() {
             <Button
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="px-4 justify-start font-medium"
             >
               {t('clients.companyName')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
         },
-        cell: ({ row }) => <div>{row.getValue("company_name") || "-"}</div>,
+        cell: ({ row }) => <div className="px-4">{row.getValue("company_name") || "-"}</div>,
+      },
+      {
+        accessorKey: "name",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="px-4 justify-start font-medium"
+            >
+              {t('clients.name')}
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          )
+        },
+        cell: ({ row }) => <div className="px-4">{row.getValue("name") || "-"}</div>,
+      },
+      {
+        accessorKey: "address",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="px-4 justify-start font-medium"
+            >
+              {t('clients.address')}
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          )
+        },
+        cell: ({ row }) => <div className="px-4">{row.getValue("address") || "-"}</div>,
       },
       {
         accessorKey: "city",
@@ -418,27 +454,41 @@ export default function ClientsPage() {
             <Button
               variant="ghost"
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="px-4 justify-start font-medium"
             >
               {t('clients.city')}
               <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
           )
         },
-        cell: ({ row }) => <div>{row.getValue("city") || "-"}</div>,
+        cell: ({ row }) => <div className="px-4">{row.getValue("city") || "-"}</div>,
       },
       {
         accessorKey: "active",
-        header: t('clients.status'),
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="px-4 justify-start font-medium"
+            >
+              {t('clients.status')}
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          )
+        },
         cell: ({ row }) => {
           const isActive = Boolean(row.getValue("active"));
           return (
-            <div>
+            <div className="px-4">
               {isActive ? (
                 <span className="inline-flex items-center rounded-full border border-transparent bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300">
+                  <span className="mr-1.5 h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400"></span>
                   {t('clients.active')}
                 </span>
               ) : (
                 <span className="inline-flex items-center rounded-full border border-transparent bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-800 dark:bg-rose-900/20 dark:text-rose-300">
+                  <span className="mr-1.5 h-2 w-2 rounded-full bg-rose-500 dark:bg-rose-400"></span>
                   {t('clients.inactive')}
                 </span>
               )}
@@ -451,6 +501,7 @@ export default function ClientsPage() {
           if (cellValue === null || cellValue === undefined) return false;
           return value === 'active' ? Boolean(cellValue) : !Boolean(cellValue);
         },
+        enableSorting: true,
       },
       {
         id: "actions",
@@ -485,6 +536,7 @@ export default function ClientsPage() {
             </div>
           );
         },
+        enableHiding: false,
       },
     ],
     [t]
@@ -507,8 +559,29 @@ export default function ClientsPage() {
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: "includesString",
   });
+
+  // Filtrer les données en fonction de la recherche globale
+  React.useEffect(() => {
+    if (globalFilter) {
+      const filteredData = clients?.filter((client) => {
+        return Object.entries(client)
+          .filter(([key]) => key !== "id" && key !== "active" && typeof client[key as keyof typeof client] === "string")
+          .some(([_, value]) => 
+            value && String(value).toLowerCase().includes(globalFilter.toLowerCase())
+          );
+      });
+      
+      if (filteredData?.length === 0) {
+        // Aucun résultat trouvé
+        // Vous pouvez ajouter un message ici si nécessaire
+      }
+    }
+  }, [globalFilter, clients]);
 
   return (
     <DashboardLayout>
@@ -519,8 +592,8 @@ export default function ClientsPage() {
             <div className="relative w-64">
               <Input
                 placeholder={t('clients.searchPlaceholder')}
-                value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-                onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+                value={globalFilter}
+                onChange={(event) => setGlobalFilter(event.target.value)}
                 className="h-9 pl-9"
                 type="text"
               />
@@ -545,6 +618,37 @@ export default function ClientsPage() {
                 <DropdownMenuItem onClick={() => setStatusFilter('inactive')}>
                   {t('clients.showInactive')}
                 </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="h-9 gap-1">
+                  {t('clients.columns')}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide() && column.id !== "actions")
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                      >
+                        {column.id === "name" ? t('clients.name') : 
+                         column.id === "company_name" ? t('clients.companyName') : 
+                         column.id === "city" ? t('clients.city') : 
+                         column.id === "active" ? t('clients.status') : 
+                         column.id === "alias" ? t('clients.alias') : 
+                         column.id === "address" ? t('clients.address') : 
+                         column.id}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
               </DropdownMenuContent>
             </DropdownMenu>
             <Button onClick={() => handleAddNew()} className="h-9 gap-1" variant="outline">

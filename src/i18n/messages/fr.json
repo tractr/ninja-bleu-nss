@@ -80,6 +80,7 @@
     "showActive": "Afficher uniquement les clients actifs",
     "showInactive": "Afficher uniquement les clients inactifs",
     "filter": "Statut",
+    "columns": "Colonnes",
     "list": "Liste des clients",
     "status": "Statut",
     "inactive": "Inactif",
