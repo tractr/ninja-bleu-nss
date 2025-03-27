@@ -38,7 +38,8 @@
     }
   },
   "auth": {
-    "signInTitle": "Connectez-vous à votre compte",
+    "signInTitle": "Connexion",
+    "signInDescription": "Entrez vos identifiants pour vous connecter à votre compte",
     "emailLabel": "Adresse e-mail",
     "emailPlaceholder": "Adresse e-mail",
     "emailRequired": "L'email est requis",
@@ -52,6 +53,14 @@
     "authError": "Échec de l'authentification. Veuillez réessayer.",
     "signInButton": "Se connecter",
     "signInLoading": "Connexion en cours...",
+    "redirecting": "Redirection en cours...",
+    "dividerText": "Ou continuer avec",
+    "noAccountText": "Vous n'avez pas de compte ?",
+    "signUpText": "S'inscrire",
+    "socialLogin": {
+      "github": "Se connecter avec GitHub",
+      "google": "Se connecter avec Google"
+    },
     "resetPassword": {
       "title": "Réinitialiser votre mot de passe",
       "emailPlaceholder": "Saisissez votre adresse e-mail",

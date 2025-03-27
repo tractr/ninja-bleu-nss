@@ -11,6 +11,7 @@
   },
   "auth": {
     "signInTitle": "Sign in to your account",
+    "signInDescription": "Enter your credentials to access your account",
     "emailLabel": "Email address",
     "emailPlaceholder": "Email address",
     "emailRequired": "Email is required",
@@ -24,6 +25,14 @@
     "authError": "Failed to authenticate. Please try again.",
     "signInButton": "Sign in",
     "signInLoading": "Signing in...",
+    "redirecting": "Redirecting...",
+    "dividerText": "Or continue with",
+    "noAccountText": "Don't have an account?",
+    "signUpText": "Sign up",
+    "socialLogin": {
+      "github": "Login with GitHub",
+      "google": "Login with Google"
+    },
     "resetPassword": {
       "title": "Reset your password",
       "emailPlaceholder": "Enter your email address",
@@ -104,7 +113,7 @@
     "reason": "Reason",
     "of": "of",
     "rowsSelected": "row(s) selected",
-    "deleteClient": "Delete client"
+    "deleteClient": "Delete Client"
   },
   "contracts": {
     "title": "Contracts",
@@ -143,9 +152,9 @@
     "cost": "Cost",
     "notes": "Notes",
     "activeDescription": "The contract is active and can be billed",
-    "selectPriceUnit": "Select price unit",
-    "selectBillingUnit": "Select billing unit",
-    "selectStatus": "Select status",
+    "selectPriceUnit": "Select a price unit",
+    "selectBillingUnit": "Select a billing unit",
+    "selectStatus": "Select a status",
     "hour": "Hour",
     "day": "Day",
     "week": "Week",
