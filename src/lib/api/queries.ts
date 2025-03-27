@@ -27,6 +27,16 @@ import {
     getContracts,
     updateContract,
 } from "./contracts";
+import {
+    getUsers,
+    getUser,
+    createUser,
+    updateUser,
+    deleteUser,
+    type User,
+    type UserInsert,
+    type UserUpdate,
+} from "./users";
 import { useToast } from "@/hooks/use-toast";
 
 export function useTodos({ done }: { done?: boolean } = {}) {
@@ -179,6 +189,91 @@ export function useDeleteClient() {
             toast({
                 title: "Success",
                 description: "Client deleted successfully",
+            });
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
+        },
+    });
+}
+
+export function useUsers({ active }: { active?: boolean } = {}) {
+    return useQuery({
+        queryKey: ["users", { active }],
+        queryFn: () => getUsers({ active }),
+    });
+}
+
+export function useUser(id: string) {
+    return useQuery({
+        queryKey: ["users", id],
+        queryFn: () => getUser(id),
+        enabled: !!id,
+    });
+}
+
+export function useCreateUser() {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+
+    return useMutation({
+        mutationFn: (user: UserInsert) => createUser(user),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            toast({
+                title: "Success",
+                description: "User created successfully",
+            });
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
+        },
+    });
+}
+
+export function useUpdateUser() {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+
+    return useMutation({
+        mutationFn: ({ id, user }: { id: string; user: UserUpdate }) =>
+            updateUser(id, user),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            toast({
+                title: "Success",
+                description: "User updated successfully",
+            });
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
+        },
+    });
+}
+
+export function useDeleteUser() {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+
+    return useMutation({
+        mutationFn: (id: string) => deleteUser(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            toast({
+                title: "Success",
+                description: "User deleted successfully",
             });
         },
         onError: (error) => {

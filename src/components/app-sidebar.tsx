@@ -73,6 +73,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: FileText,
       isActive: pathname === "/contracts"
     },
+    {
+      title: t('navigation.users'),
+      url: "/users",
+      icon: User2,
+      isActive: pathname === "/users"
+    },
   ];
 
   const navSecondaryItems = [

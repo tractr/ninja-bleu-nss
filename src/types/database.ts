@@ -338,13 +338,13 @@ export type Database = {
           address: string | null
           alias: string | null
           apartment: string | null
+          auth_user_id: string | null
           availability_blocks: string | null
           birth_date: string | null
           city: string | null
           company_name: string | null
           country: string | null
           coverage_radius_km: number | null
-          email: string
           first_name: string | null
           group_name: string | null
           id: string
@@ -354,7 +354,6 @@ export type Database = {
           mobile_phone: string | null
           notes: string | null
           office_phone: string | null
-          password_hash: string
           position: string | null
           postal_code: string | null
           province: string | null
@@ -362,7 +361,6 @@ export type Database = {
           salutation: string | null
           supervisor_id: string | null
           transportation: string | null
-          username: string
           years_of_experience: number | null
         }
         Insert: {
@@ -370,13 +368,13 @@ export type Database = {
           address?: string | null
           alias?: string | null
           apartment?: string | null
+          auth_user_id?: string | null
           availability_blocks?: string | null
           birth_date?: string | null
           city?: string | null
           company_name?: string | null
           country?: string | null
           coverage_radius_km?: number | null
-          email: string
           first_name?: string | null
           group_name?: string | null
           id: string
@@ -386,7 +384,6 @@ export type Database = {
           mobile_phone?: string | null
           notes?: string | null
           office_phone?: string | null
-          password_hash: string
           position?: string | null
           postal_code?: string | null
           province?: string | null
@@ -394,7 +391,6 @@ export type Database = {
           salutation?: string | null
           supervisor_id?: string | null
           transportation?: string | null
-          username: string
           years_of_experience?: number | null
         }
         Update: {
@@ -402,13 +398,13 @@ export type Database = {
           address?: string | null
           alias?: string | null
           apartment?: string | null
+          auth_user_id?: string | null
           availability_blocks?: string | null
           birth_date?: string | null
           city?: string | null
           company_name?: string | null
           country?: string | null
           coverage_radius_km?: number | null
-          email?: string
           first_name?: string | null
           group_name?: string | null
           id?: string
@@ -418,7 +414,6 @@ export type Database = {
           mobile_phone?: string | null
           notes?: string | null
           office_phone?: string | null
-          password_hash?: string
           position?: string | null
           postal_code?: string | null
           province?: string | null
@@ -426,7 +421,6 @@ export type Database = {
           salutation?: string | null
           supervisor_id?: string | null
           transportation?: string | null
-          username?: string
           years_of_experience?: number | null
         }
         Relationships: [
@@ -438,6 +432,108 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      users_backup: {
+        Row: {
+          active: boolean | null
+          address: string | null
+          alias: string | null
+          apartment: string | null
+          auth_user_id: string | null
+          availability_blocks: string | null
+          birth_date: string | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          coverage_radius_km: number | null
+          email: string | null
+          first_name: string | null
+          group_name: string | null
+          id: string | null
+          language: string | null
+          last_name: string | null
+          locationless: boolean | null
+          mobile_phone: string | null
+          notes: string | null
+          office_phone: string | null
+          password_hash: string | null
+          position: string | null
+          postal_code: string | null
+          province: string | null
+          role: string | null
+          salutation: string | null
+          supervisor_id: string | null
+          transportation: string | null
+          username: string | null
+          years_of_experience: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          address?: string | null
+          alias?: string | null
+          apartment?: string | null
+          auth_user_id?: string | null
+          availability_blocks?: string | null
+          birth_date?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          coverage_radius_km?: number | null
+          email?: string | null
+          first_name?: string | null
+          group_name?: string | null
+          id?: string | null
+          language?: string | null
+          last_name?: string | null
+          locationless?: boolean | null
+          mobile_phone?: string | null
+          notes?: string | null
+          office_phone?: string | null
+          password_hash?: string | null
+          position?: string | null
+          postal_code?: string | null
+          province?: string | null
+          role?: string | null
+          salutation?: string | null
+          supervisor_id?: string | null
+          transportation?: string | null
+          username?: string | null
+          years_of_experience?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          address?: string | null
+          alias?: string | null
+          apartment?: string | null
+          auth_user_id?: string | null
+          availability_blocks?: string | null
+          birth_date?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          coverage_radius_km?: number | null
+          email?: string | null
+          first_name?: string | null
+          group_name?: string | null
+          id?: string | null
+          language?: string | null
+          last_name?: string | null
+          locationless?: boolean | null
+          mobile_phone?: string | null
+          notes?: string | null
+          office_phone?: string | null
+          password_hash?: string | null
+          position?: string | null
+          postal_code?: string | null
+          province?: string | null
+          role?: string | null
+          salutation?: string | null
+          supervisor_id?: string | null
+          transportation?: string | null
+          username?: string | null
+          years_of_experience?: number | null
+        }
+        Relationships: []
       }
       visit_history: {
         Row: {
