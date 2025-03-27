@@ -82,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="flex items-center">
             <Image src="/images/logo-180x180.webp" alt={t('common.logo')} width={50} height={50} />
-            <span className="ml-3 font-bold text-blue-600">Admin NinjaBleu</span>
+            <span className="ml-3 font-bold text-ninja-blue">Admin NinjaBleu</span>
           </div>
         </div>
       </SidebarHeader>
