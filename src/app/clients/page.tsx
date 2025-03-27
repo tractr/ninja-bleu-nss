@@ -7,11 +7,11 @@ import * as z from 'zod';
 import { useTranslations } from 'next-intl';
 import { Loader2, Trash2, Edit, Plus, ChevronDown, ChevronUp, ArrowUpDown } from 'lucide-react';
 import { useClients, useCreateClient, useUpdateClient, useDeleteClient } from '@/lib/api/queries';
-import LayoutSidebar from '@/components/layout-sidebar';
+import DashboardLayout from '@/components/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -410,135 +410,117 @@ export default function ClientsPage() {
 
   // Fonction pour trier les clients
   const sortedClients = React.useMemo(() => {
-    if (!clients || !sortColumn || !sortDirection) return clients;
+    if (!clients) return [];
     
     return [...clients].sort((a, b) => {
-      const aValue = a[sortColumn];
-      const bValue = b[sortColumn];
-      
-      // Gestion des valeurs nulles
+      const aValue = a[sortColumn as keyof typeof a];
+      const bValue = b[sortColumn as keyof typeof b];
+
       if (aValue === null && bValue === null) return 0;
-      if (aValue === null) return sortDirection === 'asc' ? 1 : -1;
-      if (bValue === null) return sortDirection === 'asc' ? -1 : 1;
-      
-      // Comparaison en fonction du type
-      if (typeof aValue === 'boolean') {
-        return sortDirection === 'asc' 
-          ? (aValue === bValue ? 0 : aValue ? -1 : 1)
-          : (aValue === bValue ? 0 : aValue ? 1 : -1);
-      }
-      
-      // Comparaison de chaînes
+      if (aValue === null) return 1;
+      if (bValue === null) return -1;
+
+      const direction = sortDirection === 'asc' ? 1 : -1;
+
       if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' 
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
+        return aValue.localeCompare(bValue) * direction;
       }
-      
-      // Comparaison numérique par défaut
-      return sortDirection === 'asc' 
-        ? (aValue < bValue ? -1 : aValue > bValue ? 1 : 0)
-        : (aValue < bValue ? 1 : aValue > bValue ? -1 : 0);
+
+      if (aValue === bValue) return 0;
+      return aValue < bValue ? -1 * direction : 1 * direction;
     });
   }, [clients, sortColumn, sortDirection]);
 
   return (
-    <LayoutSidebar>
-      <div className="container py-8 mx-auto">
-        <Card className="border-none shadow-md">
-          <CardHeader className="space-y-1">
+    <DashboardLayout>
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">{t('clients.title')}</h1>
+            <p className="text-muted-foreground">Gérez vos clients et leurs informations</p>
+          </div>
+          <Button onClick={() => handleAddNew()} className="gap-1">
+            <Plus className="h-4 w-4" />
+            {t('clients.addClient')}
+          </Button>
+        </div>
+        
+        <Card className="shadow-sm overflow-hidden border bg-card">
+          <CardHeader className="px-6 py-4 border-b bg-muted/50">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-2xl font-bold">{t('clients.title')}</CardTitle>
-              <Button onClick={handleAddNew}>
-                <Plus className="mr-2 h-4 w-4" />
-                {t('clients.addNew')}
-              </Button>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="show-all"
-                checked={showAll}
-                onCheckedChange={() => setShowAll(!showAll)}
-              />
-              <label htmlFor="show-all" className="text-sm text-muted-foreground cursor-pointer">
-                {t('clients.showAll')}
-              </label>
+              <CardTitle className="text-lg font-medium">{t('clients.list')}</CardTitle>
+              <div className="flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-1">
+                      {t('clients.filter')}
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setShowAll(true)}>
+                      {t('clients.showAll')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setShowAll(false)}>
+                      {t('clients.showActive')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {isLoading ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             ) : sortedClients?.length === 0 ? (
-              <p className="py-8 text-center text-muted-foreground">{t('clients.noClients')}</p>
+              <div className="py-8 text-center text-muted-foreground">
+                {t('clients.noClients')}
+              </div>
             ) : (
-              <div className="rounded-md border">
+              <div className="relative w-full overflow-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>
-                        <SortableHeader
-                          column="name"
-                          label={t('clients.name')}
-                          currentSort={sortColumn}
-                          currentDirection={sortDirection}
-                          onSort={handleSort}
-                        />
-                      </TableHead>
-                      <TableHead>
-                        <SortableHeader
-                          column="company_name"
-                          label={t('clients.companyName')}
-                          currentSort={sortColumn}
-                          currentDirection={sortDirection}
-                          onSort={handleSort}
-                        />
-                      </TableHead>
-                      <TableHead>
-                        <SortableHeader
-                          column="city"
-                          label={t('clients.city')}
-                          currentSort={sortColumn}
-                          currentDirection={sortDirection}
-                          onSort={handleSort}
-                        />
-                      </TableHead>
-                      <TableHead>
-                        <SortableHeader
-                          column="active"
-                          label={t('clients.status')}
-                          currentSort={sortColumn}
-                          currentDirection={sortDirection}
-                          onSort={handleSort}
-                        />
-                      </TableHead>
-                      <TableHead className="text-right">
-                        {t('actions.actions')}
-                      </TableHead>
+                    <TableRow className="hover:bg-transparent">
+                      <SortableHeader
+                        column="name"
+                        label={t('clients.name')}
+                        currentSort={sortColumn}
+                        currentDirection={sortDirection}
+                        onSort={handleSort}
+                      />
+                      <SortableHeader
+                        column="company_name"
+                        label={t('clients.companyName')}
+                        currentSort={sortColumn}
+                        currentDirection={sortDirection}
+                        onSort={handleSort}
+                      />
+                      <SortableHeader
+                        column="city"
+                        label={t('clients.city')}
+                        currentSort={sortColumn}
+                        currentDirection={sortDirection}
+                        onSort={handleSort}
+                      />
+                      <TableHead>{t('clients.status')}</TableHead>
+                      <TableHead className="text-right">{t('actions.actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sortedClients?.map(client => (
-                      <TableRow key={client.id}>
-                        <TableCell>
-                          <div className="font-medium">{client.name}</div>
-                          {client.alias && (
-                            <div className="text-sm text-muted-foreground">{client.alias}</div>
-                          )}
-                        </TableCell>
+                    {sortedClients.map(client => (
+                      <TableRow key={client.id} className="hover:bg-muted/50">
+                        <TableCell className="font-medium">{client.name}</TableCell>
                         <TableCell>{client.company_name || '-'}</TableCell>
-                        <TableCell>
-                          {client.city || '-'}
-                          {client.province && `, ${client.province}`}
-                        </TableCell>
+                        <TableCell>{client.city || '-'}</TableCell>
                         <TableCell>
                           {client.active ? (
-                            <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">
+                            <span className="inline-flex items-center rounded-full border border-transparent bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300">
                               {t('clients.active')}
                             </span>
                           ) : (
-                            <span className="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded">
+                            <span className="inline-flex items-center rounded-full border border-transparent bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-800 dark:bg-rose-900/20 dark:text-rose-300">
                               {t('clients.inactive')}
                             </span>
                           )}
@@ -589,6 +571,6 @@ export default function ClientsPage() {
           />
         </DialogContent>
       </Dialog>
-    </LayoutSidebar>
+    </DashboardLayout>
   );
 }
