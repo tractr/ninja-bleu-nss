@@ -296,6 +296,7 @@ export default function ClientsPage() {
   const t = useTranslations();
   const [selectedClient, setSelectedClient] = React.useState<ClientFormValues | undefined>(undefined);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isEditMode, setIsEditMode] = React.useState(false);
   const [statusFilter, setStatusFilter] = React.useState<'all' | 'active' | 'inactive'>('all');
   
   // TanStack Table state
@@ -314,9 +315,21 @@ export default function ClientsPage() {
   const updateClientMutation = useUpdateClient();
   const deleteClientMutation = useDeleteClient();
 
+  // Gérer la fermeture propre du dialogue
+  const handleDialogClose = () => {
+    // Fermer d'abord le dialogue
+    setIsDialogOpen(false);
+    
+    // Réinitialiser les états après un court délai
+    setTimeout(() => {
+      setSelectedClient(undefined);
+      setIsEditMode(false);
+    }, 300);
+  };
+
   const handleSubmit = async (data: ClientFormValues) => {
     try {
-      if (selectedClient?.id) {
+      if (isEditMode && selectedClient?.id) {
         await updateClientMutation.mutateAsync({
           id: selectedClient.id,
           client: data,
@@ -327,16 +340,22 @@ export default function ClientsPage() {
           id: data.id || uuidv4(),
         });
       }
-      setIsDialogOpen(false);
-      setSelectedClient(undefined);
+      handleDialogClose();
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleEdit = (client: ClientFormValues) => {
-    setSelectedClient(client);
-    setIsDialogOpen(true);
+    // Créer une copie du client pour éviter les références partagées
+    const clientCopy = JSON.parse(JSON.stringify(client));
+    setSelectedClient(clientCopy);
+    setIsEditMode(true);
+    
+    // Ouvrir le dialogue après un court délai pour éviter les problèmes de rendu
+    setTimeout(() => {
+      setIsDialogOpen(true);
+    }, 50);
   };
 
   const handleDelete = async (id: string) => {
@@ -351,6 +370,7 @@ export default function ClientsPage() {
 
   const handleAddNew = () => {
     setSelectedClient(undefined);
+    setIsEditMode(false);
     setIsDialogOpen(true);
   };
 
@@ -736,17 +756,25 @@ export default function ClientsPage() {
         )}
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog 
+        open={isDialogOpen} 
+        onOpenChange={(open) => {
+          if (!open) {
+            handleDialogClose();
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>
-              {selectedClient ? t('clients.editClient') : t('clients.addClient')}
+              {isEditMode ? t('clients.editClient') : t('clients.addClient')}
             </DialogTitle>
           </DialogHeader>
           <ClientForm
+            key={selectedClient?.id || 'new-client'} 
             client={selectedClient}
             onSubmit={handleSubmit}
-            onCancel={() => setIsDialogOpen(false)}
+            onCancel={() => handleDialogClose()}
             isSubmitting={createClientMutation.isPending || updateClientMutation.isPending}
           />
         </DialogContent>
