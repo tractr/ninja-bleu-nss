@@ -3,7 +3,6 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useTranslations } from "next-intl"
 import { usePathname } from "next/navigation"
-import { ModeToggle } from "@/components/mode-toggle"
 
 export function SiteHeader() {
   const t = useTranslations()
@@ -24,9 +23,6 @@ export function SiteHeader() {
         <SidebarTrigger />
         <Separator orientation="vertical" className="h-6" />
         <h1 className="text-base font-normal">{title}</h1>
-      </div>
-      <div className="ml-auto flex items-center gap-2">
-        <ModeToggle />
       </div>
     </header>
   )

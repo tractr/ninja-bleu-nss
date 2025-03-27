@@ -1,6 +1,7 @@
 "use client"
 
-import { PlusCircleIcon, type LucideIcon } from "lucide-react"
+import * as React from "react"
+import { LucideIcon, PlusCircleIcon, FileText } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -12,6 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 
 export function NavMain({
   items,
@@ -23,20 +25,21 @@ export function NavMain({
     isActive?: boolean
   }[]
 }) {
+  const t = useTranslations()
+  
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton
-              tooltip="Quick Create"
-              className="min-w-8 bg-ninja-gradient text-white hover:text-white transition duration-200 ease-linear hover:shadow-md active:bg-ninja-gradient active:text-white"
-            >
-              <PlusCircleIcon />
-              <span>Quick Create</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="px-4 mb-2">
+          <Button 
+            className="w-full rounded-full bg-gradient-to-r from-[hsl(var(--ninja-blue))] to-[hsl(var(--ninja-blue-light))] text-white hover:text-white transition duration-200 ease-linear shadow-md hover:shadow-lg flex items-center gap-2 justify-center hover:translate-y-[-1px]"
+          >
+            <div className="bg-black bg-opacity-20 rounded-full p-1 flex items-center justify-center">
+              <PlusCircleIcon className="size-4" />
+            </div>
+            <span>Quick Create</span>
+          </Button>
+        </div>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>

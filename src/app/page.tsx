@@ -7,7 +7,7 @@ import DashboardLayout from '@/components/dashboard-layout';
 import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, BarChart, Settings, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { ArrowRight, BarChart, ChartPieIcon, FileText, Settings, TrendingDown, TrendingUp, Users } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { ChartAreaInteractive } from '@/components/chart-area-interactive';
@@ -197,9 +197,9 @@ export default function HomePage() {
                 Gérez vos clients et leurs informations
               </div>
               <div className="mt-2">
-                <Button asChild size="sm" className="gap-1">
+                <Button asChild variant="outline" className="text-sm flex items-center justify-between w-full gap-1 hover:bg-blue-50 rounded-full">
                   <Link href="/clients">
-                    Accéder aux clients
+                    <span>Voir tous les clients</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
@@ -224,10 +224,10 @@ export default function HomePage() {
                 Visualisez les tendances et performances
               </div>
               <div className="mt-2">
-                <Button asChild size="sm" variant="outline" className="gap-1">
+                <Button asChild variant="outline" className="text-sm flex items-center justify-between w-full gap-1 hover:bg-blue-50 rounded-full">
                   <Link href="#">
-                    Bientôt disponible
-                    <TrendingUp className="h-4 w-4" />
+                    <span>Analyser les tendances</span>
+                    <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
               </div>
@@ -251,9 +251,9 @@ export default function HomePage() {
                 Accédez aux rapports mensuels
               </div>
               <div className="mt-2">
-                <Button asChild size="sm" variant="outline" className="gap-1">
+                <Button asChild variant="outline" className="text-sm flex items-center justify-between w-full gap-1 hover:bg-blue-50 rounded-full">
                   <Link href="#">
-                    Bientôt disponible
+                    <span>Voir l'historique</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
@@ -278,9 +278,9 @@ export default function HomePage() {
                 Configurez votre application
               </div>
               <div className="mt-2">
-                <Button asChild size="sm" variant="outline" className="gap-1">
+                <Button asChild variant="outline" className="text-sm flex items-center justify-between w-full gap-1 hover:bg-blue-50 rounded-full">
                   <Link href="#">
-                    Bientôt disponible
+                    <span>Gérer les paramètres</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>

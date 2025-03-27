@@ -128,11 +128,11 @@ const chartConfig = {
   },
   desktop: {
     label: "Desktop",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--ninja-blue))",
   },
   mobile: {
     label: "Mobile",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--ninja-blue-light))",
   },
 } satisfies ChartConfig
 
@@ -219,24 +219,24 @@ export function ChartAreaInteractive() {
               <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={1.0}
+                  stopColor="hsl(var(--ninja-blue))"
+                  stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-desktop)"
+                  stopColor="hsl(var(--ninja-blue))"
                   stopOpacity={0.1}
                 />
               </linearGradient>
               <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.8}
+                  stopColor="hsl(var(--ninja-blue-light))"
+                  stopOpacity={0.6}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-mobile)"
+                  stopColor="hsl(var(--ninja-blue-light))"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -274,14 +274,14 @@ export function ChartAreaInteractive() {
               dataKey="mobile"
               type="natural"
               fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
+              stroke="hsl(var(--ninja-blue-light))"
               stackId="a"
             />
             <Area
               dataKey="desktop"
               type="natural"
               fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
+              stroke="hsl(var(--ninja-blue))"
               stackId="a"
             />
           </AreaChart>
