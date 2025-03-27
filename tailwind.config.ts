@@ -14,6 +14,7 @@ const config: Config = {
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
                 'ninja-blue': 'hsl(var(--ninja-blue))',
+                'ninja-blue-light': 'hsl(var(--ninja-blue-light))',
     			card: {
     				DEFAULT: 'hsl(var(--card))',
     				foreground: 'hsl(var(--card-foreground))'
