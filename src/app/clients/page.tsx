@@ -710,9 +710,26 @@ export default function ClientsPage() {
                       <TableRow
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
+                        onClick={(e) => {
+                          // Vérifier si le clic est sur une checkbox ou dans la première colonne
+                          const target = e.target as HTMLElement;
+                          const isCheckboxOrFirstColumn = 
+                            target.closest('input[type="checkbox"]') || 
+                            target.closest('[data-column-id="select"]') ||
+                            target.closest('td:first-child');
+                          
+                          // Ne pas déclencher l'édition si le clic est sur une checkbox ou dans la première colonne
+                          if (!isCheckboxOrFirstColumn) {
+                            handleEdit(row.original);
+                          }
+                        }}
+                        className="cursor-pointer hover:bg-muted/50"
                       >
                         {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
+                          <TableCell 
+                            key={cell.id}
+                            data-column-id={cell.column.id}
+                          >
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           </TableCell>
                         ))}
