@@ -5,7 +5,8 @@
     "openSettings": "Ouvrir les paramètres",
     "add": "Ajouter",
     "save": "Enregistrer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "actions": "Actions"
   },
   "home": {
     "welcome": "Bienvenue, {email}",
@@ -68,11 +69,19 @@
   },
   "clients": {
     "title": "Clients",
+    "subtitle": "Gérez vos clients et leurs informations",
     "addNew": "Ajouter un client",
     "addClient": "Ajouter un client",
     "editClient": "Modifier le client",
     "noClients": "Aucun client trouvé",
-    "showAll": "Afficher les clients inactifs",
+    "noSearchResults": "Aucun résultat pour cette recherche",
+    "searchPlaceholder": "Rechercher un client...",
+    "showAll": "Afficher tous les clients",
+    "showActive": "Afficher uniquement les clients actifs",
+    "showInactive": "Afficher uniquement les clients inactifs",
+    "filter": "Statut",
+    "list": "Liste des clients",
+    "status": "Statut",
     "inactive": "Inactif",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce client ?",
     "name": "Nom",
@@ -88,6 +97,14 @@
     "discountAmount": "Montant de la remise",
     "electronicPaymentDiscountPercent": "Remise paiement électronique (%)",
     "active": "Actif",
-    "reason": "Raison"
+    "activeDescription": "Le client est actif et peut être contacté",
+    "reason": "Raison",
+    "of": "sur",
+    "rowsSelected": "ligne(s) sélectionnée(s)",
+    "deleteClient": "Supprimer le client"
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant"
   }
 }

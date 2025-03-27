@@ -5,17 +5,38 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTranslations } from 'next-intl';
-import { Loader2, Trash2, Edit, Plus, ChevronDown, ChevronUp, ArrowUpDown } from 'lucide-react';
+import { 
+  Loader2, 
+  Trash2, 
+  Edit, 
+  Plus, 
+  ChevronDown, 
+  MoreHorizontal, 
+  ArrowUpDown,
+  Search
+} from 'lucide-react';
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { useClients, useCreateClient, useUpdateClient, useDeleteClient } from '@/lib/api/queries';
 import DashboardLayout from '@/components/dashboard-layout';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu';
 import { v4 as uuidv4 } from 'uuid';
 
 const clientSchema = z.object({
@@ -207,66 +228,6 @@ function ClientForm({
         
         <FormField
           control={form.control}
-          name="payment_terms"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('clients.paymentTerms')}</FormLabel>
-              <FormControl>
-                <Input {...field} value={field.value || ''} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="discount_amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('clients.discountAmount')}</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    {...field} 
-                    value={field.value === null ? '' : field.value}
-                    onChange={(e) => {
-                      const value = e.target.value === '' ? null : parseFloat(e.target.value);
-                      field.onChange(value);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="electronic_payment_discount_percent"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('clients.electronicPaymentDiscountPercent')}</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    {...field} 
-                    value={field.value === null ? '' : field.value}
-                    onChange={(e) => {
-                      const value = e.target.value === '' ? null : parseFloat(e.target.value);
-                      field.onChange(value);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        
-        <FormField
-          control={form.control}
           name="active"
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
@@ -277,33 +238,53 @@ function ClientForm({
                 />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>{t('clients.active')}</FormLabel>
+                <FormLabel>
+                  {t('clients.active')}
+                </FormLabel>
+                <FormDescription>
+                  {t('clients.activeDescription')}
+                </FormDescription>
               </div>
             </FormItem>
           )}
         />
         
-        <FormField
-          control={form.control}
-          name="reason"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('clients.reason')}</FormLabel>
-              <FormControl>
-                <Input {...field} value={field.value || ''} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!form.watch('active') && (
+          <FormField
+            control={form.control}
+            name="reason"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('clients.reason')}</FormLabel>
+                <FormControl>
+                  <Input {...field} value={field.value || ''} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
+        <div className="flex justify-end space-x-2 pt-4">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onCancel}
+          >
             {t('actions.cancel')}
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {t('actions.save')}
+          <Button 
+            type="submit" 
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t('actions.saving')}
+              </>
+            ) : (
+              t('actions.save')
+            )}
           </Button>
         </div>
       </form>
@@ -311,44 +292,21 @@ function ClientForm({
   );
 }
 
-// Composant pour le tri des colonnes
-type SortDirection = 'asc' | 'desc' | null;
-type SortableColumn = 'name' | 'company_name' | 'city' | 'active';
-
-interface SortableHeaderProps {
-  column: SortableColumn;
-  label: string;
-  currentSort: SortableColumn | null;
-  currentDirection: SortDirection;
-  onSort: (column: SortableColumn) => void;
-}
-
-function SortableHeader({ column, label, currentSort, currentDirection, onSort }: SortableHeaderProps) {
-  return (
-    <div className="flex items-center space-x-1 cursor-pointer" onClick={() => onSort(column)}>
-      <span>{label}</span>
-      {currentSort === column ? (
-        currentDirection === 'asc' ? (
-          <ChevronUp className="h-4 w-4" />
-        ) : (
-          <ChevronDown className="h-4 w-4" />
-        )
-      ) : (
-        <ArrowUpDown className="h-4 w-4 opacity-50" />
-      )}
-    </div>
-  );
-}
-
 export default function ClientsPage() {
   const t = useTranslations();
-  const [showAll, setShowAll] = React.useState(true);
   const [selectedClient, setSelectedClient] = React.useState<ClientFormValues | undefined>(undefined);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const [sortColumn, setSortColumn] = React.useState<SortableColumn | null>(null);
-  const [sortDirection, setSortDirection] = React.useState<SortDirection>(null);
+  const [statusFilter, setStatusFilter] = React.useState<'all' | 'active' | 'inactive'>('all');
   
-  const { data: clients, isLoading } = useClients({ active: showAll ? undefined : true });
+  // TanStack Table state
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+  
+  const { data: clients, isLoading } = useClients({ 
+    active: statusFilter === 'active' ? true : statusFilter === 'inactive' ? false : undefined 
+  });
   const createClientMutation = useCreateClient();
   const updateClientMutation = useUpdateClient();
   const deleteClientMutation = useDeleteClient();
@@ -393,167 +351,282 @@ export default function ClientsPage() {
     setIsDialogOpen(true);
   };
 
-  const handleSort = (column: SortableColumn) => {
-    if (sortColumn === column) {
-      // Cycle through: asc -> desc -> null
-      if (sortDirection === 'asc') {
-        setSortDirection('desc');
-      } else if (sortDirection === 'desc') {
-        setSortColumn(null);
-        setSortDirection(null);
-      }
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
+  // Définition des colonnes pour TanStack Table
+  const columns = React.useMemo<ColumnDef<ClientFormValues>[]>(
+    () => [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "name",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              className="pl-4"
+            >
+              {t('clients.name')}
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          )
+        },
+        cell: ({ row }) => <div className="pl-4 font-medium">{row.getValue("name") || "-"}</div>,
+      },
+      {
+        accessorKey: "company_name",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t('clients.companyName')}
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          )
+        },
+        cell: ({ row }) => <div>{row.getValue("company_name") || "-"}</div>,
+      },
+      {
+        accessorKey: "city",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              {t('clients.city')}
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          )
+        },
+        cell: ({ row }) => <div>{row.getValue("city") || "-"}</div>,
+      },
+      {
+        accessorKey: "active",
+        header: t('clients.status'),
+        cell: ({ row }) => {
+          const isActive = Boolean(row.getValue("active"));
+          return (
+            <div>
+              {isActive ? (
+                <span className="inline-flex items-center rounded-full border border-transparent bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300">
+                  {t('clients.active')}
+                </span>
+              ) : (
+                <span className="inline-flex items-center rounded-full border border-transparent bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-800 dark:bg-rose-900/20 dark:text-rose-300">
+                  {t('clients.inactive')}
+                </span>
+              )}
+            </div>
+          )
+        },
+        filterFn: (row, id, value) => {
+          if (value === 'all') return true;
+          const cellValue = row.getValue(id);
+          if (cellValue === null || cellValue === undefined) return false;
+          return value === 'active' ? Boolean(cellValue) : !Boolean(cellValue);
+        },
+      },
+      {
+        id: "actions",
+        header: t('actions.actions'),
+        cell: ({ row }) => {
+          const client = row.original;
+          return (
+            <div className="text-right pr-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>{t('actions.actions')}</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={() => handleEdit(client)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    {t('clients.editClient')}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={() => client.id && handleDelete(client.id)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t('clients.deleteClient')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+        },
+      },
+    ],
+    [t]
+  );
 
-  // Fonction pour trier les clients
-  const sortedClients = React.useMemo(() => {
-    if (!clients) return [];
-    
-    return [...clients].sort((a, b) => {
-      const aValue = a[sortColumn as keyof typeof a];
-      const bValue = b[sortColumn as keyof typeof b];
-
-      if (aValue === null && bValue === null) return 0;
-      if (aValue === null) return 1;
-      if (bValue === null) return -1;
-
-      const direction = sortDirection === 'asc' ? 1 : -1;
-
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return aValue.localeCompare(bValue) * direction;
-      }
-
-      if (aValue === bValue) return 0;
-      return aValue < bValue ? -1 * direction : 1 * direction;
-    });
-  }, [clients, sortColumn, sortDirection]);
+  // Initialisation de la table
+  const table = useReactTable({
+    data: clients || [],
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  });
 
   return (
     <DashboardLayout>
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">{t('clients.title')}</h1>
-            <p className="text-muted-foreground">Gérez vos clients et leurs informations</p>
-          </div>
-          <Button onClick={() => handleAddNew()} className="gap-1">
-            <Plus className="h-4 w-4" />
-            {t('clients.addClient')}
-          </Button>
-        </div>
-        
-        <Card className="shadow-sm overflow-hidden border bg-card">
-          <CardHeader className="px-6 py-4 border-b bg-muted/50">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-medium">{t('clients.list')}</CardTitle>
-              <div className="flex items-center gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1">
-                      {t('clients.filter')}
-                      <ChevronDown className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setShowAll(true)}>
-                      {t('clients.showAll')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setShowAll(false)}>
-                      {t('clients.showActive')}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1">
+            <div className="relative">
+              <Input
+                placeholder={t('clients.searchPlaceholder')}
+                value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+                className="w-full h-10 pl-10"
+                type="text"
+              />
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <Search className="h-4 w-4 text-gray-500" />
               </div>
             </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-              </div>
-            ) : sortedClients?.length === 0 ? (
-              <div className="py-8 text-center text-muted-foreground">
-                {t('clients.noClients')}
-              </div>
-            ) : (
-              <div className="relative w-full overflow-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="hover:bg-transparent">
-                      <SortableHeader
-                        column="name"
-                        label={t('clients.name')}
-                        currentSort={sortColumn}
-                        currentDirection={sortDirection}
-                        onSort={handleSort}
-                      />
-                      <SortableHeader
-                        column="company_name"
-                        label={t('clients.companyName')}
-                        currentSort={sortColumn}
-                        currentDirection={sortDirection}
-                        onSort={handleSort}
-                      />
-                      <SortableHeader
-                        column="city"
-                        label={t('clients.city')}
-                        currentSort={sortColumn}
-                        currentDirection={sortDirection}
-                        onSort={handleSort}
-                      />
-                      <TableHead>{t('clients.status')}</TableHead>
-                      <TableHead className="text-right">{t('actions.actions')}</TableHead>
+          </div>
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="h-10 gap-1">
+                  {t('clients.filter')}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setStatusFilter('all')}>
+                  {t('clients.showAll')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('active')}>
+                  {t('clients.showActive')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter('inactive')}>
+                  {t('clients.showInactive')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button onClick={() => handleAddNew()} className="h-10 gap-1">
+              <Plus className="h-4 w-4" />
+              {t('clients.addClient')}
+            </Button>
+          </div>
+        </div>
+        
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </TableHead>
+                        );
+                      })}
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sortedClients.map(client => (
-                      <TableRow key={client.id} className="hover:bg-muted/50">
-                        <TableCell className="font-medium">{client.name}</TableCell>
-                        <TableCell>{client.company_name || '-'}</TableCell>
-                        <TableCell>{client.city || '-'}</TableCell>
-                        <TableCell>
-                          {client.active ? (
-                            <span className="inline-flex items-center rounded-full border border-transparent bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300">
-                              {t('clients.active')}
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center rounded-full border border-transparent bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-800 dark:bg-rose-900/20 dark:text-rose-300">
-                              {t('clients.inactive')}
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleEdit(client)}
-                              className="h-8 w-8 text-muted-foreground hover:text-primary"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete(client.id)}
-                              disabled={deleteClientMutation.isPending}
-                              className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        ))}
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={columns.length} className="h-24 text-center">
+                        {t('clients.noClients')}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+            <div className="flex items-center justify-end space-x-2 py-4">
+              <div className="flex-1 text-sm text-muted-foreground">
+                {table.getFilteredSelectedRowModel().rows.length} {t('clients.of')}{" "}
+                {table.getFilteredRowModel().rows.length} {t('clients.rowsSelected')}
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <div className="space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  {t('pagination.previous')}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  {t('pagination.next')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

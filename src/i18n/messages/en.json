@@ -5,7 +5,8 @@
     "openSettings": "Open settings",
     "add": "Add",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "actions": "Actions"
   },
   "auth": {
     "signInTitle": "Sign in to your account",
@@ -68,11 +69,19 @@
   },
   "clients": {
     "title": "Clients",
+    "subtitle": "Manage your clients and their information",
     "addNew": "Add New Client",
     "addClient": "Add Client",
     "editClient": "Edit Client",
     "noClients": "No clients found",
-    "showAll": "Show inactive clients",
+    "noSearchResults": "No results for this search",
+    "searchPlaceholder": "Search for a client...",
+    "showAll": "Show all clients",
+    "showActive": "Show active clients only",
+    "showInactive": "Show inactive clients only",
+    "filter": "Status",
+    "list": "Client list",
+    "status": "Status",
     "inactive": "Inactive",
     "confirmDelete": "Are you sure you want to delete this client?",
     "name": "Name",
@@ -88,6 +97,14 @@
     "discountAmount": "Discount Amount",
     "electronicPaymentDiscountPercent": "Electronic Payment Discount (%)",
     "active": "Active",
-    "reason": "Reason"
+    "activeDescription": "The client is active and can be contacted",
+    "reason": "Reason",
+    "of": "of",
+    "rowsSelected": "row(s) selected",
+    "deleteClient": "Delete client"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
   }
 }
