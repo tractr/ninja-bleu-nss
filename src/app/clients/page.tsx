@@ -34,7 +34,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu';
 import { v4 as uuidv4 } from 'uuid';
@@ -95,7 +95,7 @@ function ClientForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form id="client-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="name"
@@ -264,29 +264,6 @@ function ClientForm({
             )}
           />
         )}
-        
-        <div className="flex justify-end space-x-2 pt-4">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={onCancel}
-          >
-            {t('actions.cancel')}
-          </Button>
-          <Button 
-            type="submit" 
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t('actions.saving')}
-              </>
-            ) : (
-              t('actions.save')
-            )}
-          </Button>
-        </div>
       </form>
     </Form>
   );
@@ -781,19 +758,46 @@ export default function ClientsPage() {
           }
         }}
       >
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>
-              {isEditMode ? t('clients.editClient') : t('clients.addClient')}
-            </DialogTitle>
-          </DialogHeader>
-          <ClientForm
-            key={selectedClient?.id || 'new-client'} 
-            client={selectedClient}
-            onSubmit={handleSubmit}
-            onCancel={() => handleDialogClose()}
-            isSubmitting={createClientMutation.isPending || updateClientMutation.isPending}
-          />
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col p-0 gap-0">
+          <div className="p-6 pb-4 border-b shadow-sm z-10">
+            <DialogHeader>
+              <DialogTitle>
+                {isEditMode ? t('clients.editClient') : t('clients.addClient')}
+              </DialogTitle>
+            </DialogHeader>
+          </div>
+          <div className="overflow-y-auto flex-grow px-6 py-4">
+            <ClientForm
+              key={selectedClient?.id || 'new-client'} 
+              client={selectedClient}
+              onSubmit={handleSubmit}
+              onCancel={() => handleDialogClose()}
+              isSubmitting={createClientMutation.isPending || updateClientMutation.isPending}
+            />
+          </div>
+          <DialogFooter className="p-6 pt-4 border-t shadow-sm z-10 bg-background">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => handleDialogClose()}
+            >
+              {t('actions.cancel')}
+            </Button>
+            <Button 
+              type="submit" 
+              form="client-form"
+              disabled={createClientMutation.isPending || updateClientMutation.isPending}
+            >
+              {createClientMutation.isPending || updateClientMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t('actions.saving')}
+                </>
+              ) : (
+                t('actions.save')
+              )}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </DashboardLayout>
