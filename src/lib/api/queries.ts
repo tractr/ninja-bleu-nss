@@ -17,6 +17,16 @@ import {
     getClients,
     updateClient,
 } from "./clients";
+import {
+    Contract,
+    ContractInsert,
+    ContractUpdate,
+    createContract,
+    deleteContract,
+    getContract,
+    getContracts,
+    updateContract,
+} from "./contracts";
 import { useToast } from "@/hooks/use-toast";
 
 export function useTodos({ done }: { done?: boolean } = {}) {
@@ -169,6 +179,91 @@ export function useDeleteClient() {
             toast({
                 title: "Success",
                 description: "Client deleted successfully",
+            });
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
+        },
+    });
+}
+
+export function useContracts({ active, clientId }: { active?: boolean, clientId?: string } = {}) {
+    return useQuery({
+        queryKey: ["contracts", { active, clientId }],
+        queryFn: () => getContracts({ active, clientId }),
+    });
+}
+
+export function useContract(id: string) {
+    return useQuery({
+        queryKey: ["contracts", id],
+        queryFn: () => getContract(id),
+        enabled: !!id,
+    });
+}
+
+export function useCreateContract() {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+
+    return useMutation({
+        mutationFn: (contract: ContractInsert) => createContract(contract),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["contracts"] });
+            toast({
+                title: "Success",
+                description: "Contract created successfully",
+            });
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
+        },
+    });
+}
+
+export function useUpdateContract() {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+
+    return useMutation({
+        mutationFn: ({ id, contract }: { id: string; contract: ContractUpdate }) =>
+            updateContract(id, contract),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["contracts"] });
+            toast({
+                title: "Success",
+                description: "Contract updated successfully",
+            });
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message,
+            });
+        },
+    });
+}
+
+export function useDeleteContract() {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+
+    return useMutation({
+        mutationFn: (id: string) => deleteContract(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["contracts"] });
+            toast({
+                title: "Success",
+                description: "Contract deleted successfully",
             });
         },
         onError: (error) => {
