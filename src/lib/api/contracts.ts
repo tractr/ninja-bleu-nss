@@ -8,7 +8,7 @@ export type ContractUpdate = TablesUpdate<"contracts">;
 export async function getContracts({ active, clientId }: { active?: boolean, clientId?: string } = {}) {
     let query = supabaseClient
         .from("contracts")
-        .select("*, clients(name, company_name), contacts(first_name, last_name), users(name)")
+        .select("*, clients(name, company_name), contacts(first_name, last_name), users(first_name, last_name)")
         .order("start_date", { ascending: false });
 
     if (active !== undefined) {
@@ -28,7 +28,7 @@ export async function getContracts({ active, clientId }: { active?: boolean, cli
 export async function getContract(id: string) {
     const { data, error } = await supabaseClient
         .from("contracts")
-        .select("*, clients(name, company_name), contacts(first_name, last_name), users(name)")
+        .select("*, clients(name, company_name), contacts(first_name, last_name), users(first_name, last_name)")
         .eq("id", id)
         .single();
 

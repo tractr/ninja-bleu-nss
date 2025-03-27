@@ -3,6 +3,7 @@
 import * as React from "react"
 import {
   ChevronUp,
+  FileText,
   Home,
   LogOut,
   Monitor,
@@ -65,6 +66,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: "/clients",
       icon: Users,
       isActive: pathname === "/clients"
+    },
+    {
+      title: t('navigation.contracts'),
+      url: "/contracts",
+      icon: FileText,
+      isActive: pathname === "/contracts"
     },
   ];
 

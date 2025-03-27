@@ -85,7 +85,8 @@ interface ContractWithRelations extends ContractFormValues {
     last_name: string | null;
   } | null;
   users?: {
-    name: string | null;
+    first_name: string | null;
+    last_name: string | null;
   } | null;
 }
 
@@ -445,7 +446,8 @@ export default function ContractsPage() {
         last_name: contacts.last_name
       } : null,
       users: users ? {
-        name: users.name
+        first_name: users.first_name,
+        last_name: users.last_name
       } : null
     };
   };
